@@ -4,6 +4,7 @@
   "description": "Decentalized product traceable system",
   "main": "index.js",
   "scripts": {
+    "type": "module",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -12,5 +13,13 @@
     "java"
   ],
   "author": "Tanushka Kashyap",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "mongoose": "^8.16.4",
+    "prettier": "^3.6.2"
+  }
 }
