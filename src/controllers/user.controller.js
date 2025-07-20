@@ -1,8 +1,8 @@
-require('dotenv').config();
-
+import dotenv from "dotenv"
+dotenv.config();
 import {asyncHandler} from "../utils/asyncHandler.js"
 import {ApiError} from "../utils/ApiError.js"
-import {User} from "../models/user.models.js"
+import {User} from "../models/user.model.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose"
@@ -25,7 +25,7 @@ import mongoose from "mongoose"
         }
     }
 
-export const registerUser = asyncHandler(async (req, res) => {
+const registerUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
 
   if (!username || !email || !password) {
@@ -58,7 +58,7 @@ export const registerUser = asyncHandler(async (req, res) => {
   );
 });
 
-export const loginUser = asyncHandler(async (req, res) => {
+const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -70,7 +70,7 @@ export const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid credentials.");
   }
 
-  const isPasswordValid = await user.comparePassword(password);
+  const isPasswordValid = await user.isPasswordCorrect(password);
   if (!isPasswordValid) {
     throw new ApiError(401, "Invalid credentials.");
   }
@@ -94,7 +94,7 @@ export const loginUser = asyncHandler(async (req, res) => {
   );
 });
 
-export const logoutUser = asyncHandler(async (req, res) => {
+const logoutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(req.user._id, { 
         $unset: { 
             refreshToken: 1 
@@ -108,7 +108,7 @@ export const logoutUser = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200, {}, "Logged out successfully."));
 });
 
-export const refreshAccessToken = asyncHandler(async (req, res) => {
+const refreshAccessToken = asyncHandler(async (req, res) => {
   const incomingRefreshToken = req.cookies?.refreshToken;
   if (!incomingRefreshToken) {
     throw new ApiError(401, "Refresh token is missing.");
@@ -160,12 +160,12 @@ const changeCurrentPassword = asyncHandler(async(req, res) => {
     .json(new ApiResponse(200, {}, "Password changes successfully."))
 })
 
-export const getCurrentUser = asyncHandler(async (req, res) => {
+const getCurrentUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id).select("-password -refreshToken");
   return res.status(200).json(new ApiResponse(200, user));
 });
 
-export const updateAccountDetails = asyncHandler(async (req, res) => {
+const updateAccountDetails = asyncHandler(async (req, res) => {
   const { username } = req.body;
 
   if (!username) {
