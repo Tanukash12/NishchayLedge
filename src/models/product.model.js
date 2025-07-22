@@ -10,6 +10,7 @@ const productSchema = new Schema(
         description: {
             type: String,
             required: true,
+            trim: true
         },
         sku: {
             type: String,
@@ -26,19 +27,35 @@ const productSchema = new Schema(
         currentLocation: {
             type: String,
             required: true,
-            default: "factory",
+            default: "Factory",
 
+        },
+        isActive: {
+            type: Boolean,
+            default: true,
         },
         status: {
             type: String,
             enum: ["CREATED", "IN_TRANSIT", "AT_WAREHOUSE", "DELIVERED", "RECALLED", "DAMAGED"],
             default: "CREATED",
         },
-        qrCodeHash: {
-            type: String,
-            required: true,
-            unique: true,
-            index: true,
+        history: {
+            type: [{
+                status: {
+                    type: String,
+                    enum: ["CREATED", "IN_TRANSIT", "AT_WAREHOUSE", "DELIVERED", "RECALLED", "DAMAGED"],
+                    default: "CREATED",
+                },
+                timestamp: {
+                    type: Date,
+                    default: Date.now
+                },
+                blockchainTxHash: {
+                    type: String,
+                    default: null
+                }
+            }],
+            default: []
         },
         qrCodeHash: {
             type: String,
@@ -48,7 +65,8 @@ const productSchema = new Schema(
         },
         qrCodeUrl: {
             type: String,
-            required: true,
+            required: false, 
+            default: null 
         },
         blockchainAddress: {
             type: String,
